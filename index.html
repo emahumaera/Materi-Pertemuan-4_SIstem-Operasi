@@ -41,7 +41,7 @@
   .device-card { background: #fff; border-radius: 1rem; overflow: hidden; border: 1px solid #f1f5f9; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: all .3s ease; cursor: pointer; }
   .device-card:hover { box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); transform: translateY(-4px); }
   .device-visual { height: 140px; display: flex; align-items: center; justify-content: center; background: #fff; position: relative; overflow: hidden; padding: 10px; }
-  .device-visual img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; transition: transform .4s ease; }
+  .device-visual img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; transition: transform .4s ease; border-radius: 0.5rem; }
   .device-card:hover .device-visual img { transform: scale(1.08); }
   .device-visual .emoji { font-size: 72px; line-height: 1; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
   .device-body { padding: 12px 10px 14px; text-align: center; border-top: 1px solid #f1f5f9; }
@@ -72,10 +72,6 @@
   .lb-kat-output { background: #dbeafe; color: #1e40af; }
   .lb-kat-storage { background: #ede9fe; color: #6d28d9; }
   .mini-badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 9.5px; font-weight: 700; letter-spacing: 0.4px; margin-top: 6px; text-transform: uppercase; }
-
-  /* Loading shimmer */
-  .img-loading { background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
-  @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 </style>
 </head>
 <body class="flex min-h-screen overflow-x-hidden antialiased">
@@ -309,7 +305,7 @@
       </div>
     </section>
 
-    <!-- s10: GALERI PERANGKAT (GAMBAR ASLI) -->
+    <!-- s10: GALERI PERANGKAT -->
     <section class="section" id="s10">
       <div class="mb-10"><h2 class="font-heading text-3xl sm:text-4xl font-bold text-brand-dark mb-4">Galeri Perangkat</h2><p class="text-slate-500 text-lg">Klik gambar untuk melihat detail lengkap perangkat.</p></div>
 
@@ -470,14 +466,10 @@
 
 <script>
 /* ==========================================================
-   GANTI GAMBAR DI SINI
+   UPDATE NAMA FILE LOKAL (Berdasarkan Screenshot Anda)
    ----------------------------------------------------------
-   Semua URL gambar perangkat. Anda bisa menggantinya dengan:
-   - URL gambar lokal: "gambar/keyboard.jpg"
-   - URL online lainnya
-   
-   Jika gambar gagal dimuat, sistem otomatis menampilkan
-   emoji sebagai fallback.
+   Kode ini sekarang membaca nama file gambar yang 1 folder
+   dengan file HTML Anda persis huruf besar/kecilnya.
    ========================================================== */
 const deviceImages = {
   // INPUT
@@ -485,9 +477,9 @@ const deviceImages = {
   mouse:         'Mouse.png',
   scanner:       'Scanner.png',
   mikrofon:      'Mikrofon.png',
-  webcam:        'Webcam.png',
+  webcam:        'Webcam.png', // Tambahkan gambar Webcam.png jika belum ada
   joystick:      'Joystick.png',
-  touchscreen:   'Touchscreen.png',
+  touchscreen:   'Touchscreen.png', // Bisa diganti 'Digitizer.png' kalau itu nama filenya
   barcode:       'Scanner2.png',
   case:          'case.png',
   
@@ -502,6 +494,7 @@ const deviceImages = {
   printer:       'Printer.png',
   speaker:       'Speaker.png',
   proyektor:     'Proyektor.png',
+  headset:       'Headset.png', // Tambahkan gambar Headset.png jika belum ada
   
   // STORAGE
   hdd:           'HDD (Hard Disk Drive).png',
@@ -521,7 +514,7 @@ const deviceData = {
   webcam: { title: 'Webcam', kategori: 'Input', katClass: 'lb-kat-input', emoji: '📷', desc: 'Webcam (web camera) adalah kamera digital yang terhubung ke komputer untuk mengambil gambar atau video secara real-time. Digunakan untuk video call, streaming, dan konferensi online.', tips: '💡 <strong>Fakta:</strong> Webcam pertama "CoffeeCam" dipasang di Universitas Cambridge 1991 untuk memantau persediaan kopi!' },
   joystick: { title: 'Joystick', kategori: 'Input', katClass: 'lb-kat-input', emoji: '🕹️', desc: 'Joystick adalah perangkat input untuk mengontrol permainan atau aplikasi tertentu. Memiliki tuas yang bisa digerakkan ke berbagai arah serta tombol-tombol aksi.', tips: '💡 <strong>Penggunaan:</strong> Selain gaming, joystick juga dipakai untuk drone, alat berat, dan simulator penerbangan.' },
   touchscreen: { title: 'Touchscreen', kategori: 'Input', katClass: 'lb-kat-input', emoji: '👆', desc: 'Touchscreen adalah layar yang dapat menerima sentuhan langsung dari jari atau stylus pengguna. Berfungsi ganda sebagai perangkat input sekaligus output.', tips: '💡 <strong>Jenis:</strong> Resistive (tekanan) dan Capacitive (sentuhan listrik dari jari).' },
-  barcode: { title: 'Scanner 2', kategori: 'Input', katClass: 'lb-kat-input', emoji: '📊', desc: 'Barcode scanner membaca kode batang (barcode) pada produk. Umum digunakan di supermarket, perpustakaan, dan manajemen inventaris.', tips: '💡 <strong>Fakta:</strong> Barcode pertama dipatenkan 1952, tapi baru dipakai komersial 1974 di supermarket Ohio, AS.' },
+  barcode: { title: 'Scanner Barcode', kategori: 'Input', katClass: 'lb-kat-input', emoji: '📊', desc: 'Barcode scanner membaca kode batang (barcode) pada produk. Umum digunakan di supermarket, perpustakaan, dan manajemen inventaris.', tips: '💡 <strong>Fakta:</strong> Barcode pertama dipatenkan 1952, tapi baru dipakai komersial 1974 di supermarket Ohio, AS.' },
   case: { title: 'Case', kategori: 'Proses', katClass: 'lb-kat-proses', emoji: '📦', desc: 'Case adalah wadah pelindung utama untuk menempatkan, mengorganisasi, dan mengamankan berbagai komponen internal komputer seperti motherboard, PSU, dan drive penyimpanan.', tips: '💡 <strong>Jenis:</strong> Full tower (besar), Mid tower (sedang), Mini-ITX (kecil).' },
 
   // PROSES
@@ -586,7 +579,7 @@ const deviceGroups = {
 /* ============ RENDER KARTU PERANGKAT ============ */
 function renderDeviceCard(item) {
   const imgUrl = deviceImages[item.id] || '';
-  const safeImgUrl = encodeURI(imgUrl); // Mencegah error spasi pada GitHub
+  const safeImgUrl = encodeURI(imgUrl); 
   const emoji = (deviceData[item.id] && deviceData[item.id].emoji) || '❓';
   // onerror: kalau gambar gagal load, ganti dengan emoji
   const fallback = `this.style.display='none';this.parentElement.insertAdjacentHTML('beforeend','<span class=\\'emoji\\'>${emoji}</span>');`;
@@ -625,7 +618,7 @@ function openLightbox(id) {
   
   const visualEl = document.getElementById('lb-visual');
   const imgUrl = deviceImages[id] || '';
-  const safeImgUrl = encodeURI(imgUrl); // Mencegah error spasi pada GitHub
+  const safeImgUrl = encodeURI(imgUrl);
   const fallback = `this.style.display='none';this.parentElement.insertAdjacentHTML('beforeend','<span class=\\'emoji\\'>${d.emoji}</span>');`;
   visualEl.innerHTML = `<img src="${safeImgUrl}" alt="${d.title}" onerror="${fallback}">`;
   
