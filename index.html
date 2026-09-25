@@ -43,10 +43,6 @@
   .device-visual { height: 140px; display: flex; align-items: center; justify-content: center; background: #fff; position: relative; overflow: hidden; padding: 10px; }
   .device-visual img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; transition: transform .4s ease; }
   .device-card:hover .device-visual img { transform: scale(1.08); }
-  .device-visual .emoji { font-size: 72px; line-height: 1; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
-  .device-body { padding: 12px 10px 14px; text-align: center; border-top: 1px solid #f1f5f9; }
-  .device-body h5 { font-weight: 700; font-size: 13.5px; color: #1e293b; margin-bottom: 4px; }
-  .device-body p { font-size: 11.5px; color: #64748b; line-height: 1.4; }
   .zoom-hint { position: absolute; top: 8px; right: 8px; width: 26px; height: 26px; border-radius: 50%; background: rgba(79, 70, 229, 0.9); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; opacity: 0; transition: opacity .3s; z-index: 2; }
   .device-card:hover .zoom-hint { opacity: 1; }
 
@@ -58,7 +54,6 @@
   @keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
   .lightbox-visual { height: 380px; display: flex; align-items: center; justify-content: center; background: #fff; border-radius: 2rem 2rem 0 0; position: relative; overflow: hidden; padding: 20px; border-bottom: 1px solid #f1f5f9; }
   .lightbox-visual img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; }
-  .lightbox-visual .emoji { font-size: 200px; line-height: 1; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15)); }
   .lightbox-close { position: absolute; top: 16px; right: 16px; width: 44px; height: 44px; border-radius: 50%; background: rgba(15, 23, 42, 0.8); color: white; display: flex; align-items: center; justify-content: center; font-size: 22px; cursor: pointer; border: none; transition: all .2s; z-index: 10; }
   .lightbox-close:hover { background: #ef4444; transform: rotate(90deg); }
   .lightbox-info { padding: 28px 32px 32px; }
@@ -72,10 +67,6 @@
   .lb-kat-output { background: #dbeafe; color: #1e40af; }
   .lb-kat-storage { background: #ede9fe; color: #6d28d9; }
   .mini-badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 9.5px; font-weight: 700; letter-spacing: 0.4px; margin-top: 6px; text-transform: uppercase; }
-
-  /* Loading shimmer */
-  .img-loading { background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
-  @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 </style>
 </head>
 <body class="flex min-h-screen overflow-x-hidden antialiased">
@@ -470,14 +461,7 @@
 
 <script>
 /* ==========================================================
-   GANTI GAMBAR DI SINI
-   ----------------------------------------------------------
-   Semua URL gambar perangkat. Anda bisa menggantinya dengan:
-   - URL gambar lokal: "gambar/keyboard.jpg"
-   - URL online lainnya
-   
-   Jika gambar gagal dimuat, sistem otomatis menampilkan
-   emoji sebagai fallback.
+   NAMA FILE GAMBAR (SESUAI FOLDER ANDA)
    ========================================================== */
 const deviceImages = {
   // INPUT
@@ -490,21 +474,19 @@ const deviceImages = {
   touchscreen:   'Touchscreen.png',
   barcode:       'Scanner2.png',
   case:          'case.png',
-  
+
   // PROSES
   cpu:           'CPU.png',
   gpu:           'GPU.png',
   ram:           'RAM.png',
   motherboard:   'Motherboard.png',
-  
-  
+
   // OUTPUT
   monitor:       'Monitor.png',
   printer:       'Printer.png',
   speaker:       'Speaker.png',
   proyektor:     'Proyektor.png',
-  
-  
+
   // STORAGE
   hdd:           'HDD (Hard Disk Drive).png',
   ssd:           'SSD (Solid State Drive).png',
@@ -516,34 +498,122 @@ const deviceImages = {
 /* ============ DATA LENGKAP PERANGKAT ============ */
 const deviceData = {
   // INPUT
-  keyboard: { title: 'Keyboard', kategori: 'Input', katClass: 'lb-kat-input', 'Keyboard.png', desc: 'Keyboard adalah perangkat input yang digunakan untuk mengetik huruf, angka, simbol, dan perintah ke dalam komputer. Keyboard modern memiliki layout QWERTY dengan tombol fungsi, navigasi, dan numerik.', tips: '💡 <strong>Fakta:</strong> Keyboard pertama kali dipatenkan oleh Christopher Latham Sholes pada 1868. Layout QWERTY dirancang untuk mengurangi kemacetan pada mesin tik mekanik.' },
-  mouse: { title: 'Mouse', kategori: 'Input', katClass: 'lb-kat-input', 'Mouse.png', desc: 'Mouse adalah perangkat penunjuk (pointing device) untuk menggerakkan kursor, mengklik, men-drag, dan berinteraksi dengan antarmuka grafis. Mouse modern dilengkapi scroll wheel dan sensor optik/laser.', tips: '💡 <strong>Fakta:</strong> Mouse pertama diciptakan Douglas Engelbart tahun 1964 dan terbuat dari kayu!' },
-  scanner: { title: 'Scanner', kategori: 'Input', katClass: 'lb-kat-input', 'Scanner.png', desc: 'Scanner adalah perangkat input yang memindai dokumen fisik menjadi file digital berbentuk gambar atau PDF. Hasil scan dapat diedit dan disimpan di komputer.', tips: '💡 <strong>Jenis:</strong> Flatbed, sheet-fed, dan handheld scanner.' },
-  mikrofon: { title: 'Mikrofon', kategori: 'Input', katClass: 'lb-kat-input', 'Mikrofon.png', desc: 'Mikrofon mengubah gelombang suara menjadi sinyal listrik/digital yang dapat diproses komputer. Digunakan untuk rekaman, video call, dan perintah suara.', tips: '💡 <strong>Jenis:</strong> Dynamic, Condenser, dan Ribbon.' },
-  webcam: { title: 'Webcam', kategori: 'Input', katClass: 'lb-kat-input', 'Webcam.png', desc: 'Webcam (web camera) adalah kamera digital yang terhubung ke komputer untuk mengambil gambar atau video secara real-time. Digunakan untuk video call, streaming, dan konferensi online.', tips: '💡 <strong>Fakta:</strong> Webcam pertama "CoffeeCam" dipasang di Universitas Cambridge 1991 untuk memantau persediaan kopi!' },
-  joystick: { title: 'Joystick', kategori: 'Input', katClass: 'lb-kat-input', 'Joystick.png', desc: 'Joystick adalah perangkat input untuk mengontrol permainan atau aplikasi tertentu. Memiliki tuas yang bisa digerakkan ke berbagai arah serta tombol-tombol aksi.', tips: '💡 <strong>Penggunaan:</strong> Selain gaming, joystick juga dipakai untuk drone, alat berat, dan simulator penerbangan.' },
-  touchscreen: { title: 'Touchscreen', kategori: 'Input', katClass: 'lb-kat-input', 'Touchscreen.png', desc: 'Touchscreen adalah layar yang dapat menerima sentuhan langsung dari jari atau stylus pengguna. Berfungsi ganda sebagai perangkat input sekaligus output.', tips: '💡 <strong>Jenis:</strong> Resistive (tekanan) dan Capacitive (sentuhan listrik dari jari).' },
-  barcode: { title: 'Scanner 2', kategori: 'Input', katClass: 'lb-kat-input', 'Scanner2.png', desc: 'Barcode scanner membaca kode batang (barcode) pada produk. Umum digunakan di supermarket, perpustakaan, dan manajemen inventaris.', tips: '💡 <strong>Fakta:</strong> Barcode pertama dipatenkan 1952, tapi baru dipakai komersial 1974 di supermarket Ohio, AS.' },
-  case: { title: 'Case', kategori: 'Proses', katClass: 'lb-kat-proses', 'case.png', desc: 'Case adalah wadah pelindung utama untuk menempatkan, mengorganisasi, dan mengamankan berbagai komponen internal komputer seperti motherboard, PSU, dan drive penyimpanan.', tips: '💡 <strong>Jenis:</strong> Full tower (besar), Mid tower (sedang), Mini-ITX (kecil).' },
- 
+  keyboard: {
+    title: 'Keyboard', kategori: 'Input', katClass: 'lb-kat-input',
+    desc: 'Keyboard adalah perangkat input yang digunakan untuk mengetik huruf, angka, simbol, dan perintah ke dalam komputer. Keyboard modern memiliki layout QWERTY dengan tombol fungsi, navigasi, dan numerik.',
+    tips: '💡 <strong>Fakta:</strong> Keyboard pertama kali dipatenkan oleh Christopher Latham Sholes pada 1868. Layout QWERTY dirancang untuk mengurangi kemacetan pada mesin tik mekanik.'
+  },
+  mouse: {
+    title: 'Mouse', kategori: 'Input', katClass: 'lb-kat-input',
+    desc: 'Mouse adalah perangkat penunjuk (pointing device) untuk menggerakkan kursor, mengklik, men-drag, dan berinteraksi dengan antarmuka grafis. Mouse modern dilengkapi scroll wheel dan sensor optik/laser.',
+    tips: '💡 <strong>Fakta:</strong> Mouse pertama diciptakan Douglas Engelbart tahun 1964 dan terbuat dari kayu!'
+  },
+  scanner: {
+    title: 'Scanner', kategori: 'Input', katClass: 'lb-kat-input',
+    desc: 'Scanner adalah perangkat input yang memindai dokumen fisik menjadi file digital berbentuk gambar atau PDF. Hasil scan dapat diedit dan disimpan di komputer.',
+    tips: '💡 <strong>Jenis:</strong> Flatbed, sheet-fed, dan handheld scanner.'
+  },
+  mikrofon: {
+    title: 'Mikrofon', kategori: 'Input', katClass: 'lb-kat-input',
+    desc: 'Mikrofon mengubah gelombang suara menjadi sinyal listrik/digital yang dapat diproses komputer. Digunakan untuk rekaman, video call, dan perintah suara.',
+    tips: '💡 <strong>Jenis:</strong> Dynamic, Condenser, dan Ribbon.'
+  },
+  webcam: {
+    title: 'Webcam', kategori: 'Input', katClass: 'lb-kat-input',
+    desc: 'Webcam (web camera) adalah kamera digital yang terhubung ke komputer untuk mengambil gambar atau video secara real-time. Digunakan untuk video call, streaming, dan konferensi online.',
+    tips: '💡 <strong>Fakta:</strong> Webcam pertama "CoffeeCam" dipasang di Universitas Cambridge 1991 untuk memantau persediaan kopi!'
+  },
+  joystick: {
+    title: 'Joystick', kategori: 'Input', katClass: 'lb-kat-input',
+    desc: 'Joystick adalah perangkat input untuk mengontrol permainan atau aplikasi tertentu. Memiliki tuas yang bisa digerakkan ke berbagai arah serta tombol-tombol aksi.',
+    tips: '💡 <strong>Penggunaan:</strong> Selain gaming, joystick juga dipakai untuk drone, alat berat, dan simulator penerbangan.'
+  },
+  touchscreen: {
+    title: 'Touchscreen', kategori: 'Input', katClass: 'lb-kat-input',
+    desc: 'Touchscreen adalah layar yang dapat menerima sentuhan langsung dari jari atau stylus pengguna. Berfungsi ganda sebagai perangkat input sekaligus output.',
+    tips: '💡 <strong>Jenis:</strong> Resistive (tekanan) dan Capacitive (sentuhan listrik dari jari).'
+  },
+  barcode: {
+    title: 'Barcode Scanner', kategori: 'Input', katClass: 'lb-kat-input',
+    desc: 'Barcode scanner membaca kode batang (barcode) pada produk. Umum digunakan di supermarket, perpustakaan, dan manajemen inventaris.',
+    tips: '💡 <strong>Fakta:</strong> Barcode pertama dipatenkan 1952, tapi baru dipakai komersial 1974 di supermarket Ohio, AS.'
+  },
+
   // PROSES
-  cpu: { title: 'CPU (Central Processing Unit)', kategori: 'Proses', katClass: 'lb-kat-proses', 'CPU.png', desc: 'CPU adalah unit pemroses utama yang menjadi "otak" komputer. Menerima instruksi dari input, mengolahnya, dan mengirim hasil ke output. Terdiri dari ALU dan CU.', tips: '💡 <strong>Fakta:</strong> CPU modern seperti Intel Core i9 memiliki miliaran transistor dalam satu chip berukuran beberapa sentimeter!' },
-  gpu: { title: 'GPU (Graphics Processing Unit)', kategori: 'Proses', katClass: 'lb-kat-proses', 'GPU.png', desc: 'GPU adalah prosesor khusus yang mengolah data grafis dan gambar. Sangat penting untuk gaming, editing video, rendering 3D, dan machine learning.', tips: '💡 <strong>Perbedaan:</strong> CPU sedikit core tapi cepat untuk tugas kompleks. GPU banyak core untuk tugas paralel seperti rendering.' },
-  ram: { title: 'RAM (Random Access Memory)', kategori: 'Proses', katClass: 'lb-kat-proses', 'RAM.png', desc: 'RAM adalah memori penyimpanan sementara yang menyimpan data dan instruksi saat komputer bekerja. Semakin besar RAM, semakin banyak aplikasi bisa dibuka bersamaan.', tips: '💡 <strong>Analogi:</strong> RAM seperti meja belajar — hanya menampung buku yang sedang dipakai. Saat komputer dimatikan, isi RAM ikut hilang.' },
-  motherboard: { title: 'Motherboard', kategori: 'Proses', katClass: 'lb-kat-proses', 'Motherboard.png', desc: 'Motherboard adalah papan sirkuit utama yang menghubungkan semua komponen — CPU, RAM, GPU, storage, dan periferal. Menyalurkan daya dan data antar komponen.', tips: '💡 <strong>Fakta:</strong> Motherboard juga sering disebut "mobo" atau "mainboard" oleh teknisi komputer.' },
-  
+  cpu: {
+    title: 'CPU (Central Processing Unit)', kategori: 'Proses', katClass: 'lb-kat-proses',
+    desc: 'CPU adalah unit pemroses utama yang menjadi "otak" komputer. Menerima instruksi dari input, mengolahnya, dan mengirim hasil ke output. Terdiri dari ALU dan CU.',
+    tips: '💡 <strong>Fakta:</strong> CPU modern seperti Intel Core i9 memiliki miliaran transistor dalam satu chip berukuran beberapa sentimeter!'
+  },
+  gpu: {
+    title: 'GPU (Graphics Processing Unit)', kategori: 'Proses', katClass: 'lb-kat-proses',
+    desc: 'GPU adalah prosesor khusus yang mengolah data grafis dan gambar. Sangat penting untuk gaming, editing video, rendering 3D, dan machine learning.',
+    tips: '💡 <strong>Perbedaan:</strong> CPU sedikit core tapi cepat untuk tugas kompleks. GPU banyak core untuk tugas paralel seperti rendering.'
+  },
+  ram: {
+    title: 'RAM (Random Access Memory)', kategori: 'Proses', katClass: 'lb-kat-proses',
+    desc: 'RAM adalah memori penyimpanan sementara yang menyimpan data dan instruksi saat komputer bekerja. Semakin besar RAM, semakin banyak aplikasi bisa dibuka bersamaan.',
+    tips: '💡 <strong>Analogi:</strong> RAM seperti meja belajar — hanya menampung buku yang sedang dipakai. Saat komputer dimatikan, isi RAM ikut hilang.'
+  },
+  motherboard: {
+    title: 'Motherboard', kategori: 'Proses', katClass: 'lb-kat-proses',
+    desc: 'Motherboard adalah papan sirkuit utama yang menghubungkan semua komponen — CPU, RAM, GPU, storage, dan periferal. Menyalurkan daya dan data antar komponen.',
+    tips: '💡 <strong>Fakta:</strong> Motherboard juga sering disebut "mobo" atau "mainboard" oleh teknisi komputer.'
+  },
+  case: {
+    title: 'Case', kategori: 'Proses', katClass: 'lb-kat-proses',
+    desc: 'Case adalah wadah pelindung utama untuk menempatkan, mengorganisasi, dan mengamankan berbagai komponen internal komputer seperti motherboard, PSU, dan drive penyimpanan.',
+    tips: '💡 <strong>Jenis:</strong> Full tower (besar), Mid tower (sedang), Mini-ITX (kecil).'
+  },
+
   // OUTPUT
-  monitor: { title: 'Monitor', kategori: 'Output', katClass: 'lb-kat-output', 'Monitor.png', desc: 'Monitor adalah perangkat output utama yang menampilkan gambar, teks, dan video secara visual. Menjadi jendela interaksi antara pengguna dengan komputer.', tips: '💡 <strong>Jenis panel:</strong> TN (cepat), IPS (warna akurat), VA (kontras tinggi), OLED (hitam sempurna).' },
-  printer: { title: 'Printer', kategori: 'Output', katClass: 'lb-kat-output', 'Printer.png', desc: 'Printer adalah perangkat output yang mencetak dokumen atau gambar ke media fisik seperti kertas. Ada beberapa jenis: inkjet (tinta cair), laser (toner), dan dot matrix.', tips: '💡 <strong>Tips:</strong> Printer inkjet lebih murah tapi boros tinta. Printer laser lebih mahal tapi hemat biaya per halaman.' },
-  speaker: { title: 'Speaker', kategori: 'Output', katClass: 'lb-kat-output', 'Speaker.png', desc: 'Speaker adalah perangkat output yang mengeluarkan suara dari komputer. Mengubah sinyal listrik menjadi gelombang suara yang bisa didengar.', tips: '💡 <strong>Fakta:</strong> Speaker mengubah sinyal listrik menjadi getaran mekanis melalui membran yang bergerak cepat.' },
-  proyektor: { title: 'Proyektor', kategori: 'Output', katClass: 'lb-kat-output', 'Proyektor.png', desc: 'Proyektor menampilkan gambar ke layar besar atau dinding. Umum digunakan untuk presentasi, bioskop, dan pembelajaran di kelas.', tips: '💡 <strong>Jenis:</strong> LCD, DLP, dan Laser.' },
-   
+  monitor: {
+    title: 'Monitor', kategori: 'Output', katClass: 'lb-kat-output',
+    desc: 'Monitor adalah perangkat output utama yang menampilkan gambar, teks, dan video secara visual. Menjadi jendela interaksi antara pengguna dengan komputer.',
+    tips: '💡 <strong>Jenis panel:</strong> TN (cepat), IPS (warna akurat), VA (kontras tinggi), OLED (hitam sempurna).'
+  },
+  printer: {
+    title: 'Printer', kategori: 'Output', katClass: 'lb-kat-output',
+    desc: 'Printer adalah perangkat output yang mencetak dokumen atau gambar ke media fisik seperti kertas. Ada beberapa jenis: inkjet (tinta cair), laser (toner), dan dot matrix.',
+    tips: '💡 <strong>Tips:</strong> Printer inkjet lebih murah tapi boros tinta. Printer laser lebih mahal tapi hemat biaya per halaman.'
+  },
+  speaker: {
+    title: 'Speaker', kategori: 'Output', katClass: 'lb-kat-output',
+    desc: 'Speaker adalah perangkat output yang mengeluarkan suara dari komputer. Mengubah sinyal listrik menjadi gelombang suara yang bisa didengar.',
+    tips: '💡 <strong>Fakta:</strong> Speaker mengubah sinyal listrik menjadi getaran mekanis melalui membran yang bergerak cepat.'
+  },
+  proyektor: {
+    title: 'Proyektor', kategori: 'Output', katClass: 'lb-kat-output',
+    desc: 'Proyektor menampilkan gambar ke layar besar atau dinding. Umum digunakan untuk presentasi, bioskop, dan pembelajaran di kelas.',
+    tips: '💡 <strong>Jenis:</strong> LCD, DLP, dan Laser.'
+  },
+
   // STORAGE
-  hdd: { title: 'HDD (Hard Disk Drive)', kategori: 'Penyimpanan', katClass: 'lb-kat-storage', 'HDD (Hard Disk Drive).png', desc: 'HDD adalah media penyimpanan magnetik dengan piringan berputar. Menyimpan data permanen dengan kapasitas besar dan harga murah, namun lebih lambat dibanding SSD.', tips: '💡 <strong>Analogi:</strong> HDD seperti lemari besar di rumah — muat banyak barang, tapi untuk mengambil barang perlu waktu.' },
-  ssd: { title: 'SSD (Solid State Drive)', kategori: 'Penyimpanan', katClass: 'lb-kat-storage', 'SSD (Solid State Drive).png', desc: 'SSD adalah media penyimpanan berbasis chip memori flash tanpa bagian bergerak. Jauh lebih cepat, senyap, dan tahan guncangan dibanding HDD, tapi lebih mahal.', tips: '💡 <strong>Fakta:</strong> SSD bisa membaca data hingga 7.000 MB/detik — 10x lebih cepat dari HDD tercepat!' },
-  flashdisk: { title: 'Flashdisk', kategori: 'Penyimpanan', katClass: 'lb-kat-storage', 'Flashdisk.png', desc: 'Flashdisk adalah media penyimpanan portabel berbasis flash memory dengan konektor USB. Kecil, ringan, mudah dibawa, dan tidak memerlukan daya eksternal.', tips: '💡 <strong>Analogi:</strong> Flashdisk seperti tas kecil — membawa barang ke tempat lain dengan mudah.' },
-  externalhdd: { title: 'External Hard Disk', kategori: 'Penyimpanan', katClass: 'lb-kat-storage', 'External Hard Disk.png', desc: 'External HDD adalah hard disk yang dikemas dalam casing eksternal dengan koneksi USB/eSATA. Menyimpan data dalam jumlah besar dan portabel untuk backup.', tips: '💡 <strong>Tips:</strong> Cocok untuk backup file besar seperti video editing dan koleksi foto.' },
-  memorycard: { title: 'Memory Card', kategori: 'Penyimpanan', katClass: 'lb-kat-storage', MemoryCard.png', desc: 'Memory Card adalah media penyimpanan kecil berbentuk kartu untuk perangkat mobile seperti kamera, HP, drone, dan konsol game. Jenis umum: SD, microSD, CF.', tips: '💡 <strong>Fakta:</strong> MicroSD berukuran sebesar kuku jari, tapi bisa menyimpan hingga 1 TB data!' }
+  hdd: {
+    title: 'HDD (Hard Disk Drive)', kategori: 'Penyimpanan', katClass: 'lb-kat-storage',
+    desc: 'HDD adalah media penyimpanan magnetik dengan piringan berputar. Menyimpan data permanen dengan kapasitas besar dan harga murah, namun lebih lambat dibanding SSD.',
+    tips: '💡 <strong>Analogi:</strong> HDD seperti lemari besar di rumah — muat banyak barang, tapi untuk mengambil barang perlu waktu.'
+  },
+  ssd: {
+    title: 'SSD (Solid State Drive)', kategori: 'Penyimpanan', katClass: 'lb-kat-storage',
+    desc: 'SSD adalah media penyimpanan berbasis chip memori flash tanpa bagian bergerak. Jauh lebih cepat, senyap, dan tahan guncangan dibanding HDD, tapi lebih mahal.',
+    tips: '💡 <strong>Fakta:</strong> SSD bisa membaca data hingga 7.000 MB/detik — 10x lebih cepat dari HDD tercepat!'
+  },
+  flashdisk: {
+    title: 'Flashdisk', kategori: 'Penyimpanan', katClass: 'lb-kat-storage',
+    desc: 'Flashdisk adalah media penyimpanan portabel berbasis flash memory dengan konektor USB. Kecil, ringan, mudah dibawa, dan tidak memerlukan daya eksternal.',
+    tips: '💡 <strong>Analogi:</strong> Flashdisk seperti tas kecil — membawa barang ke tempat lain dengan mudah.'
+  },
+  externalhdd: {
+    title: 'External Hard Disk', kategori: 'Penyimpanan', katClass: 'lb-kat-storage',
+    desc: 'External HDD adalah hard disk yang dikemas dalam casing eksternal dengan koneksi USB/eSATA. Menyimpan data dalam jumlah besar dan portabel untuk backup.',
+    tips: '💡 <strong>Tips:</strong> Cocok untuk backup file besar seperti video editing dan koleksi foto.'
+  },
+  memorycard: {
+    title: 'Memory Card', kategori: 'Penyimpanan', katClass: 'lb-kat-storage',
+    desc: 'Memory Card adalah media penyimpanan kecil berbentuk kartu untuk perangkat mobile seperti kamera, HP, drone, dan konsol game. Jenis umum: SD, microSD, CF.',
+    tips: '💡 <strong>Fakta:</strong> MicroSD berukuran sebesar kuku jari, tapi bisa menyimpan hingga 1 TB data!'
+  }
 };
 
 /* ============ DAFTAR PERANGKAT PER KATEGORI ============ */
@@ -556,16 +626,16 @@ const deviceGroups = {
     { id: 'webcam', name: 'Webcam', desc: 'Mengambil gambar atau video', badge: 'lb-kat-input', badgeText: 'Input' },
     { id: 'joystick', name: 'Joystick', desc: 'Mengontrol permainan/aplikasi', badge: 'lb-kat-input', badgeText: 'Input' },
     { id: 'touchscreen', name: 'Touchscreen', desc: 'Sentuhan langsung dari jari', badge: 'lb-kat-input', badgeText: 'Input' },
-    { id: 'barcode', name: 'Barcode Scanner', desc: 'Membaca kode batang produk', badge: 'lb-kat-input', badgeText: 'Input' },
-    { id: 'case', name: 'Case', desc: 'Wadah pelindung komponen internal', badge: 'lb-kat-proses', badgeText: 'Proses' }
+    { id: 'barcode', name: 'Barcode Scanner', desc: 'Membaca kode batang produk', badge: 'lb-kat-input', badgeText: 'Input' }
   ],
   'grid-proses': [
     { id: 'cpu', name: 'CPU', desc: 'Otak komputer; mengolah semua data', badge: 'lb-kat-proses', badgeText: 'Proses' },
     { id: 'gpu', name: 'GPU (VGA)', desc: 'Mengolah data grafis dan gambar', badge: 'lb-kat-proses', badgeText: 'Proses' },
     { id: 'ram', name: 'RAM', desc: 'Menyimpan data sementara', badge: 'lb-kat-proses', badgeText: 'Proses' },
-    { id: 'motherboard', name: 'Motherboard', desc: 'Papan utama penghubung komponen', badge: 'lb-kat-proses', badgeText: 'Proses' }
-  ],  
-'grid-output': [
+    { id: 'motherboard', name: 'Motherboard', desc: 'Papan utama penghubung komponen', badge: 'lb-kat-proses', badgeText: 'Proses' },
+    { id: 'case', name: 'Case', desc: 'Wadah pelindung komponen internal', badge: 'lb-kat-proses', badgeText: 'Proses' }
+  ],
+  'grid-output': [
     { id: 'monitor', name: 'Monitor', desc: 'Menampilkan gambar dan teks', badge: 'lb-kat-output', badgeText: 'Output' },
     { id: 'printer', name: 'Printer', desc: 'Mencetak dokumen ke kertas', badge: 'lb-kat-output', badgeText: 'Output' },
     { id: 'speaker', name: 'Speaker', desc: 'Mengeluarkan suara', badge: 'lb-kat-output', badgeText: 'Output' },
@@ -586,13 +656,10 @@ const deviceGroups = {
 /* ============ RENDER KARTU PERANGKAT ============ */
 function renderDeviceCard(item) {
   const imgUrl = deviceImages[item.id] || '';
-  const emoji = (deviceData[item.id] && deviceData[item.id].emoji) || '❓';
-  // onerror: kalau gambar gagal load, ganti dengan emoji
-  const fallback = `this.style.display='none';this.parentElement.insertAdjacentHTML('beforeend','<span class=\\'emoji\\'>${emoji}</span>');`;
   return `
     <div class="device-card" onclick="openLightbox('${item.id}')">
       <div class="device-visual">
-        <img src="${imgUrl}" alt="${item.name}" loading="lazy" onerror="${fallback}">
+        <img src="${imgUrl}" alt="${item.name}" loading="lazy">
         <span class="zoom-hint">🔍</span>
       </div>
       <div class="device-body">
@@ -615,16 +682,19 @@ Object.keys(deviceGroups).forEach(gridId => {
 function openLightbox(id) {
   const d = deviceData[id];
   if (!d) return;
+
   document.getElementById('lb-title').textContent = d.title;
   document.getElementById('lb-desc').textContent = d.desc;
   document.getElementById('lb-tips').innerHTML = d.tips || '';
+
   const katEl = document.getElementById('lb-kategori');
   katEl.textContent = d.kategori;
   katEl.className = 'kategori-badge ' + d.katClass;
+
   const visualEl = document.getElementById('lb-visual');
   const imgUrl = deviceImages[id] || '';
-  const fallback = `this.style.display='none';this.parentElement.insertAdjacentHTML('beforeend','<span class=\\'emoji\\'>${d.emoji}</span>');`;
-  visualEl.innerHTML = `<img src="${imgUrl}" alt="${d.title}" onerror="${fallback}">`;
+  visualEl.innerHTML = `<img src="${imgUrl}" alt="${d.title}">`;
+
   document.getElementById('lightbox').classList.add('active');
   document.body.style.overflow = 'hidden';
 }
